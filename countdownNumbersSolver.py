@@ -1,5 +1,6 @@
 import itertools,time
 
+#generates all possible combinations and permutations of the 6 numbers
 def createPermutationsForNumbers(numbers):
   operationsWithoutOperators=[]
   for i in range(1,7):
@@ -7,6 +8,7 @@ def createPermutationsForNumbers(numbers):
       operationsWithoutOperators.append(list(j))
   return operationsWithoutOperators
 
+#adds operators to operations, completing the operation
 def addOperators(operationsWithoutOperators):
   operators=['+','-','/','*']
   operations=[]
@@ -40,6 +42,8 @@ def addOperators(operationsWithoutOperators):
                 operations.append(operationsWithoutOperators[i]+[j1,j2,j3,j4,j5])
   return operations
 
+#evaluates an operation in RPN notation
+#Eg. evaluate(["2","3","+","7","**"])=35
 def evaluate(operation):
   t=[]
   operators=['+','-','/','*']	
@@ -68,6 +72,7 @@ def checkOperationsAndPrint(operations,target):
       smallest_difference=abs(answer-target)
       print(convertToInfix(i),"=",evaluate(i))
 
+#converts an operation in RPN form to infix form
 def convertToInfix(operation):
   t=[]
   operators=['+','-','/','*']
