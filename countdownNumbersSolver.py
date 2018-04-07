@@ -1,4 +1,4 @@
-import itertools
+import itertools,time
 
 def createPermutationsForNumbers(numbers):
   operationsWithoutOperators=[]
@@ -53,47 +53,20 @@ def evaluate(operation):
         t.append(str(eval(num2+i+num1)))
     else:
       t.append(i)
-  return float(t[0])
+  return int(float(t[0])) if(int(float(t[0]))==float(t[0])) else None
 
 def checkOperationsAndPrint(operations,target):
-  closest_operations=[]
-  smallest_difference=target
+  smallest_difference=2**31-1
   for i in operations:
     answer=evaluate(i)
     if(answer==None):
       continue
-    if(int(answer)==answer):
-      if(answer==target):
-        if(smallest_difference!=0):
-          closest_operations=[]
-          closest_operations.append(i)
-          smallest_difference=0
-        else:
-          closest_operations.append(i)
-      else:
-        if(abs(answer-target)<smallest_difference):
-          smallest_difference=abs(answer-target)
-          closest_operations=[]
-          closest_operations.append(i)
-        elif(abs(answer-target)==smallest_difference):
-          closest_operations.append(i)
-  closest_operations=list(set(tuple(i) for i in closest_operations)) #remove duplicates
-  if(smallest_difference==0):
-    print("Found "+str(len(closest_operations))+" operations that worked. (10 points)")
-    for i in closest_operations:
-      print(convertToInfix(i))
-  elif(smallest_difference<=5):
-    print("Found "+str(len(closest_operations))+" operations that were "+str(smallest_difference)+" away (closest I could get). (7 points)")
-    for i in closest_operations:
-      print(convertToInfix(i))
-  elif(smallest_difference<=10):
-    print("Found "+str(len(closest_operations))+" operations that were "+str(smallest_difference)+" away (closest I could get). (5 points)")
-    for i in closest_operations:
-      print(convertToInfix(i))
-  else:
-    print("Found "+str(len(closest_operations))+" operations that were within "+str(smallest_difference)+" away (closest I could get). (0 points)")
-    for i in closest_operations:
-      print(convertToInfix(i))
+    if(answer==target):
+      print(convertToInfix(i),"=",evaluate(i))
+      return
+    elif(abs(answer-target)<smallest_difference):
+      smallest_difference=abs(answer-target)
+      print(convertToInfix(i),"=",evaluate(i))
 
 def convertToInfix(operation):
   t=[]
@@ -105,7 +78,10 @@ def convertToInfix(operation):
       t.append("("+num2+" "+i+" "+num1+")")
     else:
       t.append(i)
-  return ''.join(t)[1:-1]
+  if("(" in t[0]):
+    return ''.join(t)[1:-1]
+  else:
+    return ''.join(t[0])
 
 def getNumbersAndTarget():
   numbers=[i for i in input("Enter the 6 numbers separated by a space: ").split()]
@@ -114,6 +90,9 @@ def getNumbersAndTarget():
 
 def main():
   numbers,target=getNumbersAndTarget()
+  start_time=time.time()
   checkOperationsAndPrint(addOperators(createPermutationsForNumbers(numbers)),target)
+  print("And that was as close as I could get")
+  print("Took ",time.time()-start_time,"\bs to run")
 
 main()
